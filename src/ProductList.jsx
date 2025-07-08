@@ -263,13 +263,13 @@ function ProductList({ onHomeClick }) {
     const [addedToCart, setAddedToCart] = useState({});
 
     const handleAddToCart = (product) => {
-        dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
-      q
-        setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
-          ...prevState, // Spread the previous state to retain existing entries
-          [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-        }));
-      };
+  dispatch(addItem(product));
+  setAddedToCart((prevState) => {
+    const updated = { ...prevState, [product.name]: true };
+    console.log('Updated addedToCart:', updated);
+    return updated;
+  });
+};;
 
     return (
         <div>
@@ -337,11 +337,12 @@ function ProductList({ onHomeClick }) {
           <div className="product-description">{plant.description}</div> {/* Display plant description */}
           <div className="product-cost">${plant.cost}</div> {/* Display plant cost */}
           <button
-            className="product-button"
-            onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
-          >
-            Add to Cart
-          </button>
+  className="product-button"
+  onClick={() => handleAddToCart(plant)}
+  disabled={addedToCart[plant.name]} // disable if already added
+>
+  {addedToCart[plant.name] ? 'Product is added' : 'Add to Cart'}
+</button>
         </div>
       ))}
     </div>
