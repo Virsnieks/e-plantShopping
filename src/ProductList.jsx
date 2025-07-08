@@ -8,6 +8,11 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useDispatch to
 function ProductList({ onHomeClick }) {
     
     const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.cart.items);
+
+const isProductInCart = (productName) => {
+  return cartItems.some(item => item.name === productName);
+};
     const totalItems = useSelector(state => state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
 );
     const [showCart, setShowCart] = useState(false);
@@ -260,16 +265,11 @@ function ProductList({ onHomeClick }) {
             setShowCart(false);
     };
 
-    const [addedToCart, setAddedToCart] = useState({});
+    
 
-    const handleAddToCart = (product) => {
+   const handleAddToCart = (product) => {
   dispatch(addItem(product));
-  setAddedToCart((prevState) => {
-    const updated = { ...prevState, [product.name]: true };
-    console.log('Updated addedToCart:', updated);
-    return updated;
-  });
-};;
+};
 
     return (
         <div>
@@ -339,9 +339,9 @@ function ProductList({ onHomeClick }) {
           <button
   className="product-button"
   onClick={() => handleAddToCart(plant)}
-  disabled={addedToCart[plant.name]} // disable if already added
+  disabled={isProductInCart(plant.name)}
 >
-  {addedToCart[plant.name] ? 'Product is added' : 'Add to Cart'}
+  {isProductInCart(plant.name) ? 'Product is added' : 'Add to Cart'}
 </button>
         </div>
       ))}
